@@ -1,7 +1,7 @@
 import glob
 import zipfile
 import logging
-from os import path, unlink
+from os import path
 import shutil
 import tarfile
 import tempfile
