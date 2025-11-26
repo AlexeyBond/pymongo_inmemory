@@ -47,13 +47,11 @@ def _download_file(dl_url, destination_file):
         )
         return
 
-    with tempfile.NamedTemporaryFile(delete=False) as temp:
+    with tempfile.NamedTemporaryFile(delete=True) as temp:
         logger.debug("Starting download to temporary location {}".format(temp.name))
         try:
             request.urlretrieve(dl_url, filename=temp.name, reporthook=_dl_reporter)
         except HTTPError:
-            f.close()
-            unlink(f.name)
             raise CantDownload(
                 (
                     "Can't download {url}, "
@@ -61,10 +59,6 @@ def _download_file(dl_url, destination_file):
                     "Possibly the version is not provided for the operating system."
                 ).format(url=dl_url)
             )
-        except Exception:
-            f.close()
-            unlink(f.name)
-            raise
 
         logger.debug("Finished download.")
         shutil.copyfile(temp.name, destination_file)
